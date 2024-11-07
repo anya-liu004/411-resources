@@ -28,7 +28,7 @@ class Meal:
 
 
 def create_meal(meal: str, cuisine: str, price: float, difficulty: str) -> None:
-     """
+    """
     Creates a new meal in the meals table. 
 
     Args:
@@ -244,7 +244,7 @@ def get_meal_by_name(meal_name: str) -> Meal:
 
 
 def update_meal_stats(meal_id: int, result: str) -> None:
-     """
+    """
     Updates the stats of a meal after a battle.
 
     Args:

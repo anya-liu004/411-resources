@@ -16,6 +16,7 @@ class BattleModel:
 
     Attributes:
         combatants (List[Meal]): A list containing the two meals ready for battle.
+    
     """
     def __init__(self):
         """
