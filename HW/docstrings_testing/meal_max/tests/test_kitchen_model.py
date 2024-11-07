@@ -244,6 +244,16 @@ def test_get_meal_by_id_not_found(mock_cursor):
     with pytest.raises(ValueError, match="Meal with ID 999 not found"):
         get_meal_by_id(999)
 
+def test_get_meal_by_id_deleted(mock_cursor):
+    """Test retrieving a meal by ID when the meal is marked as deleted."""
+
+    # Simulate that the meal exists but is already marked as deleted (id = 1)
+    mock_cursor.fetchone.return_value = ([True])
+
+    # Expect a ValueError when the meal is marked as deleted
+    with pytest.raises(ValueError, match="Meal with ID 1 has been deleted"):
+        get_meal_by_id(1)
+
 
 def test_get_leaderboard(mock_cursor):
     """Test retrieving the meal leaderboard sorted by wins."""
@@ -307,6 +317,18 @@ def test_update_meal_stats_win(mock_cursor):
     expected_arguments = (1,)
     actual_arguments = mock_cursor.execute.call_args[0][1]
     assert actual_arguments == expected_arguments, f"Expected {expected_arguments}, got {actual_arguments}"
+
+def test_update_meal_stats_meal_not_found(mock_cursor):
+    """Test error when trying to update stats for a meal that doesn't exist."""
+
+    # Simulate that the meal is not found (fetchone returns None)
+    mock_cursor.fetchone.return_value = None
+    
+    with pytest.raises(ValueError, match="Meal with ID 1 not found"):
+        update_meal_stats(1, 'win')
+
+    # Ensure the select query ran to check for the meal's existence
+    mock_cursor.execute.assert_called_once_with("SELECT deleted FROM meals WHERE id = ?", (1,))
 
 def test_update_meal_stats_invalid_result(mock_cursor):
     """Test updating the meal stats with an invalid result."""
