@@ -1,9 +1,9 @@
 import logging
 from typing import List
 
-from meal_max.models.kitchen_model import Meal, update_meal_stats
-from meal_max.utils.logger import configure_logger
-from meal_max.utils.random_utils import get_random
+from meal_max.meal_max.models.kitchen_model import Meal, update_meal_stats
+from meal_max.meal_max.utils.logger import configure_logger
+from meal_max.meal_max.utils.random_utils import get_random
 
 
 logger = logging.getLogger(__name__)
