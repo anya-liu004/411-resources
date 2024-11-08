@@ -158,7 +158,75 @@ update_meal_stats() {
 # Battle Management
 #
 ############################################################
+clear_combatants() {
+  echo "Clearing all combatants..."
+  response=$(curl -s -X POST "$BASE_URL/clear-combatants")
 
+  if echo "$response" | grep -q '"status": "success"'; then
+    echo "All combatants cleared successfully."
+  else
+    echo "Failed to clear combatants."
+    exit 1
+  fi
+}
+
+get_battle_score() {
+  meal=$1
+  cuisine=$2
+  price=$3
+  difficulty=$4
+
+  echo "Getting battle score for combatant ($meal, $cuisine, $price, $difficulty)..."
+  response=$(curl -s -X GET "$BASE_URL/get-battle-score" \
+    -H "Content-Type: application/json" \
+    -d "{\"meal\": \"$meal\", \"cuisine\": \"$cuisine\", \"price\": $price, \"difficulty\": \"$difficulty\"}")
+
+  if echo "$response" | grep -q '"status": "success"'; then
+    echo "Battle score retrieved successfully."
+    if [ "$ECHO_JSON" = true ]; then
+      echo "Battle Score JSON:"
+      echo "$response" | jq .
+    fi
+  else
+    echo "Failed to retrieve battle score."
+    exit 1
+  fi
+}
+
+get_combatants() {
+  echo "Retrieving current list of combatants..."
+  response=$(curl -s -X GET "$BASE_URL/get-combatants")
+
+  if echo "$response" | grep -q '"status": "success"'; then
+    echo "Combatants retrieved successfully."
+    if [ "$ECHO_JSON" = true ]; then
+      echo "Combatants JSON:"
+      echo "$response" | jq .
+    fi
+  else
+    echo "Failed to retrieve combatants."
+    exit 1
+  fi
+}
+
+prep_combatant() {
+  meal=$1
+  cuisine=$2
+  price=$3
+  difficulty=$4
+
+  echo "Preparing combatant ($meal, $cuisine, $price, $difficulty)..."
+  response=$(curl -s -X POST "$BASE_URL/prep-combatant" \
+    -H "Content-Type: application/json" \
+    -d "{\"meal\": \"$meal\", \"cuisine\": \"$cuisine\", \"price\": $price, \"difficulty\": \"$difficulty\"}")
+
+  if echo "$response" | grep -q '"status": "success"'; then
+    echo "Combatant added successfully."
+  else
+    echo "Failed to add combatant."
+    exit 1
+  fi
+}
 
 
 
