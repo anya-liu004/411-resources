@@ -276,3 +276,10 @@ get_leaderboard
 
 # Test deleting a meal by ID
 delete_meal_by_id 1
+
+clear_combatants
+prep_combatant "udon" 
+prep_combatant "vindaloo" 
+battle
+
+get_combatants
