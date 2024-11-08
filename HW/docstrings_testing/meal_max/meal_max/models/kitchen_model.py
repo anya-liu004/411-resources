@@ -41,6 +41,7 @@ def create_meal(meal: str, cuisine: str, price: float, difficulty: str) -> None:
         ValueError: If price or difficulty is invalid.
         sqlite3.IntegrityError: If a meal with the same name already exists.
         sqlite3.Error: For any other database errors.
+
     """
 
     if not isinstance(price, (int, float)) or price <= 0:
@@ -73,6 +74,7 @@ def clear_meals() -> None:
 
     Raises:
         sqlite3.Error: If any database error occurs.
+
     """
     try:
         with open(os.getenv("SQL_CREATE_TABLE_PATH", "/app/sql/create_meal_table.sql"), "r") as fh:
@@ -98,6 +100,7 @@ def delete_meal(meal_id: int) -> None:
     Raises:
         ValueError: If the meal does not exist or is already deleted.
         sqlite3.Error: If any database error occurs.
+
     """
     try:
         with get_db_connection() as conn:
@@ -134,6 +137,7 @@ def get_leaderboard(sort_by: str="wins") -> dict[str, Any]:
     Raises:
         ValueError: If sort_by parameter is invalid.
         sqlite3.Error: For any database errors.
+
     """
     query = """
         SELECT id, meal, cuisine, price, difficulty, battles, wins, (wins * 1.0 / battles) AS win_pct
@@ -188,6 +192,7 @@ def get_meal_by_id(meal_id: int) -> Meal:
     Raises:
         ValueError: If the meal is not found or is marked as deleted.
         sqlite3.Error: If any database error occurs.
+
     """
     try:
         with get_db_connection() as conn:
@@ -222,6 +227,7 @@ def get_meal_by_name(meal_name: str) -> Meal:
     Raises:
         ValueError: If the meal is not found or is marked as deleted.
         sqlite3.Error: If any database error occurs.
+
     """
     try:
         with get_db_connection() as conn:
@@ -254,6 +260,7 @@ def update_meal_stats(meal_id: int, result: str) -> None:
     Raises:
         ValueError: If the meal does not exist, is deleted, or result is invalid.
         sqlite3.Error: If any database error occurs.
+        
     """
     try:
         with get_db_connection() as conn:
