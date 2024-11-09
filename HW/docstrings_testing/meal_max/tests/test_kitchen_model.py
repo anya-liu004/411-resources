@@ -4,7 +4,7 @@ import sqlite3
 
 import pytest
 
-from meal_max.meal_max.models.kitchen_model import (
+from meal_max.models.kitchen_model import (
     Meal,
     create_meal,
     clear_meals,
@@ -41,7 +41,7 @@ def mock_cursor(mocker):
     def mock_get_db_connection():
         yield mock_conn  # Yield the mocked connection object
 
-    mocker.patch("meal_max.meal_max.models.kitchen_model.get_db_connection", mock_get_db_connection)
+    mocker.patch("meal_max.models.kitchen_model.get_db_connection", mock_get_db_connection)
 
     return mock_cursor  # Return the mock cursor so we can set expectations per test
 
