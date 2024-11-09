@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the base URL for the Flask API
-BASE_URL="http://localhost:5000/api"
+BASE_URL="http://localhost:8080/api"
 
 # Flag to control whether to echo JSON output
 ECHO_JSON=false
@@ -94,18 +94,7 @@ delete_meal_by_id() {
   fi
 }
 
-get_all_meals() {
-  echo "Getting all meals..."
-  response=$(curl -s -X GET "$BASE_URL/get-all-meals")
-  if echo "$response" | grep -q '"status": "success"'; then
-    echo "All meals retrieved successfully."
-    echo "Meals JSON:"
-    echo "$response" | jq .
-  else
-    echo "Failed to get meals."
-    exit 1
-  fi
-}
+#delete meal by name
 
 get_meal_by_id() {
   meal_id=$1
@@ -122,17 +111,18 @@ get_meal_by_id() {
   fi
 }
 
+#update back to file
 get_meal_by_name() {
-  meal_name=$1
+  #meal_name=Spaghetti Bolognese
 
-  echo "Getting meal by name ($meal_name)..."
-  response=$(curl -s -X GET "$BASE_URL/get-meal-by-name/$meal_name")
+  echo "Getting meal by name ( Bolognese)..."
+  response=$(curl -s -X GET "$BASE_URL/get-meal-by-name/Bolognese")
   if echo "$response" | grep -q '"status": "success"'; then
-    echo "Meal retrieved successfully by name ($meal_name)."
-    echo "Meal JSON (name $meal_name):"
+    echo "Meal retrieved successfully by name (Bolognese)."
+    echo "Meal JSON (name Bolognese):"
     echo "$response" | jq .
   else
-    echo "Failed to get meal by name ($meal_name)."
+    echo "Failed to get meal by name (Bolognese)."
     exit 1
   fi
 }
@@ -257,7 +247,7 @@ check_db
 clear_meals
 
 # Create meals
-create_meal "Spaghetti Bolognese" "Italian" 12.99 "MED"
+create_meal "Bolognese" "Italian" 12.99 "MED"
 
 # Get all meals
 get_all_meals
@@ -266,7 +256,7 @@ get_all_meals
 get_meal_by_id 1
 
 # Test retrieving a meal by name
-get_meal_by_name "Spaghetti Bolognese"
+get_meal_by_name "Bolognese"
 
 # Test updating meal stats (replace 1 with a valid meal ID and result with 'win' or 'loss')
 update_meal_stats 1 "win"
