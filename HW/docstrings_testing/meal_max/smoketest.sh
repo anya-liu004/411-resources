@@ -278,8 +278,9 @@ get_leaderboard
 delete_meal_by_id 1
 
 clear_combatants
-prep_combatant "udon" 
-prep_combatant "vindaloo" 
-battle
+prep_combatant "Spaghetti Bolognese" "Italian" 12.99 "MED"
+prep_combatant "Mac and Cheese" "American" 9.99 "MED"
+
+get_battle_score
 
 get_combatants
