@@ -8,7 +8,7 @@ alias deactivate 'test $?_OLD_VIRTUAL_PATH != 0 && setenv PATH "$_OLD_VIRTUAL_PA
 # Unset irrelevant variables.
 deactivate nondestructive
 
-setenv VIRTUAL_ENV "/Users/cheyennemowatt/CS411/411-resources/HW/docstrings_testing/meal_max/meal_max_venv"
+setenv VIRTUAL_ENV "/Users/cheyennemowatt/meal/411-resources/HW/docstrings_testing/meal_max/meal_max_venv"
 
 set _OLD_VIRTUAL_PATH="$PATH"
 setenv PATH "$VIRTUAL_ENV/bin:$PATH"

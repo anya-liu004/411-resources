@@ -1,4 +1,4 @@
-#!/Users/cheyennemowatt/CS411/411-resources/HW/docstrings_testing/meal_max/meal_max_venv/bin/python
+#!/Users/cheyennemowatt/meal/411-resources/HW/docstrings_testing/meal_max/meal_max_venv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys

@@ -153,8 +153,14 @@ def test_delete_meal_already_deleted(mock_cursor):
     mock_cursor.fetchone.return_value = ([True])
 
     # Expect a ValueError when attempting to delete a meal that's already been deleted
-    with pytest.raises(ValueError, match="Meal with ID 999 has already been deleted"):
+    with pytest.raises(ValueError) as exc_info:
         delete_meal(999)
+    
+    print(f"Caught error: {exc_info.value}")
+
+    # Now check if the message matches exactly
+    assert str(exc_info.value) == "Meal with ID 999 has already been deleted"
+
 
 # Test: Clearing the meals table
 def test_clear_meals(mock_cursor, mocker):

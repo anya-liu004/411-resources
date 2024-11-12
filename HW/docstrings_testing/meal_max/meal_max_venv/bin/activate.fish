@@ -33,7 +33,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV "/Users/cheyennemowatt/CS411/411-resources/HW/docstrings_testing/meal_max/meal_max_venv"
+set -gx VIRTUAL_ENV "/Users/cheyennemowatt/meal/411-resources/HW/docstrings_testing/meal_max/meal_max_venv"
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/bin" $PATH
