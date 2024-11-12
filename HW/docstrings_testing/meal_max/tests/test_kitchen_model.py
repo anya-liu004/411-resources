@@ -159,7 +159,7 @@ def test_delete_meal_already_deleted(mock_cursor):
     print(f"Caught error: {exc_info.value}")
 
     # Now check if the message matches exactly
-    assert str(exc_info.value) == "Meal with ID 999 has already been deleted"
+    assert str(exc_info.value) == "Meal with ID 999 has already been deleted."
 
 
 # Test: Clearing the meals table
@@ -190,13 +190,13 @@ def test_get_meal_by_name(mock_cursor):
     """Test retrieving a meal by its name."""
 
     # Simulate meal data (name = "Spaghetti")
-    mock_cursor.fetchone.return_value = (1, "Spaghetti", "Italian", 12.99, "Medium", False)
+    mock_cursor.fetchone.return_value = (1, "Spaghetti", "Italian", 12.99, "MED", False)
 
     # Call the function and check the result
     result = get_meal_by_name("Spaghetti")
 
     # Expected result based on the simulated fetchone return value
-    expected_result = Meal(1, "Spaghetti", "Italian", 12.99, "Medium")
+    expected_result = Meal(1, "Spaghetti", "Italian", 12.99, "MED")
 
     # Ensure the result matches the expected output
     assert result == expected_result, f"Expected {expected_result}, got {result}"
@@ -222,13 +222,13 @@ def test_get_meal_by_id(mock_cursor):
     """Test retrieving a meal by its ID."""
 
     # Simulate meal data (id = 1)
-    mock_cursor.fetchone.return_value = (1, "Spaghetti", "Italian", 12.99, "Medium", False)
+    mock_cursor.fetchone.return_value = (1, "Spaghetti", "Italian", 12.99, "MED", False)
 
     # Call the function and check the result
     result = get_meal_by_id(1)
 
     # Expected result based on the simulated fetchone return value
-    expected_result = Meal(1, "Spaghetti", "Italian", 12.99, "Medium")
+    expected_result = Meal(1, "Spaghetti", "Italian", 12.99, "MED")
 
     # Ensure the result matches the expected output
     assert result == expected_result, f"Expected {expected_result}, got {result}"
