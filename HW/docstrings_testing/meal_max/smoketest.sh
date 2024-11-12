@@ -237,14 +237,17 @@ prep_combatant() {
 ######################################################
 
 get_leaderboard() {
-  echo "Getting leaderboard..."
-  response=$(curl -s -X GET "$BASE_URL/get-leaderboard")
+  sort_by=${1:-wins}  # Default to "wins" if no argument is provided
+  echo "Getting meal leaderboard sorted by $sort_by..."
+  response=$(curl -s -X GET "$BASE_URL/get-leaderboard?sort_by=$sort_by")
   if echo "$response" | grep -q '"status": "success"'; then
-    echo "Leaderboard retrieved successfully."
-    echo "Leaderboard JSON:"
-    echo "$response" | jq .
+    echo "Meal leaderboard retrieved successfully."
+    if [ "$ECHO_JSON" = true ]; then
+      echo "Leaderboard JSON (sorted by $sort_by):"
+      echo "$response" | jq .
+    fi
   else
-    echo "Failed to get leaderboard."
+    echo "Failed to get meal leaderboard."
     exit 1
   fi
 }
@@ -272,7 +275,7 @@ get_meal_by_name "Spaghetti Bolognese"
 update_meal_stats 1 "win"
 
 # Get leaderboard
-get_leaderboard
+get_leaderboard "win_pct"
 
 # Test deleting a meal by ID
 delete_meal_by_id 1
