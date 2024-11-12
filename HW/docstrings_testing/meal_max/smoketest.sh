@@ -239,7 +239,10 @@ prep_combatant() {
 get_leaderboard() {
   sort_by=${1:-wins}  # Default to "wins" if no argument is provided
   echo "Getting meal leaderboard sorted by $sort_by..."
+  
   response=$(curl -s -X GET "$BASE_URL/get-leaderboard?sort_by=$sort_by")
+  echo "Raw response: $response"  # Print the full response for debugging
+
   if echo "$response" | grep -q '"status": "success"'; then
     echo "Meal leaderboard retrieved successfully."
     if [ "$ECHO_JSON" = true ]; then
@@ -251,6 +254,7 @@ get_leaderboard() {
     exit 1
   fi
 }
+
 
 # Health checks
 check_health
