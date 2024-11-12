@@ -52,6 +52,26 @@ check_db() {
 #
 ##########################################################
 
+get_all_meals() {
+  echo "Getting all meals..."
+  response=$(curl -s -X GET "$BASE_URL/get-all-meals")
+
+  echo "Response: $response"  # Print the full response for debugging
+
+  if echo "$response" | grep -q '"status": "success"'; then
+    echo "Meals retrieved successfully."
+    if [ "$ECHO_JSON" = true ]; then
+      echo "Meals JSON:"
+      echo "$response" | jq .
+    fi
+  else
+    echo "Failed to get meals."
+    exit 1
+  fi
+}
+
+
+
 clear_meals() {
   echo "Clearing all meals..."
   curl -s -X DELETE "$BASE_URL/clear-meals" | grep -q '"status": "success"'
@@ -127,20 +147,6 @@ get_meal_by_name() {
   fi
 }
 
-update_meal_stats() {
-  meal_id=$1
-  result=$2
-
-  echo "Updating meal stats (ID: $meal_id, Result: $result)..."
-  response=$(curl -s -X POST "$BASE_URL/update-meal-stats" -H "Content-Type: application/json" \
-    -d "{\"meal_id\":$meal_id, \"result\":\"$result\"}")
-  if echo "$response" | grep -q '"status": "success"'; then
-    echo "Meal stats updated successfully (ID: $meal_id)."
-  else
-    echo "Failed to update meal stats (ID: $meal_id)."
-    exit 1
-  fi
-}
 
 
 ############################################################
@@ -248,9 +254,11 @@ clear_meals
 
 # Create meals
 create_meal "Bolognese" "Italian" 12.99 "MED"
+create_meal "Burger" "American" 5.99 "LOW"
+create_meal "Sushi" "Japanese" 18.99 "HIGH"
 
-# Get all meals
-get_all_meals
+# Test deleting a meal by ID
+delete_meal_by_id 3
 
 # Test retrieving a meal by ID (replace 1 with a valid meal ID)
 get_meal_by_id 1
@@ -261,15 +269,18 @@ get_meal_by_name "Bolognese"
 # Test updating meal stats (replace 1 with a valid meal ID and result with 'win' or 'loss')
 update_meal_stats 1 "win"
 
+clear_combatants
+
+prep_combatant "Bolognese" "Italian" 12.99 "MED"
+prep_combatant "Burger" "American" 5.99 "LOW"
+
+
+get_combatants
+
+get_battle_score 1
+get_battle_score 2
+
 # Get leaderboard
 get_leaderboard
 
-# Test deleting a meal by ID
-delete_meal_by_id 1
-
-clear_combatants
-prep_combatant "udon" 
-prep_combatant "vindaloo" 
-battle
-
-get_combatants
+echo "All tests passed successfully!"
