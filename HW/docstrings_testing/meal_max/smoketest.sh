@@ -284,6 +284,6 @@ clear_combatants
 prep_combatant "Spaghetti Bolognese" "Italian" 12.99 "MED"
 prep_combatant "Mac and Cheese" "American" 9.99 "MED"
 
-get_battle_score
+get_battle_score "Pasta" "Italian" 15.50 "MED"
 
 get_combatants
