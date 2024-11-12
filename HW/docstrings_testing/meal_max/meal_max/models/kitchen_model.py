@@ -110,7 +110,7 @@ def delete_meal(meal_id: int) -> None:
                 deleted = cursor.fetchone()[0]
                 if deleted:
                     logger.info("Meal with ID %s has already been deleted", meal_id)
-                    raise ValueError(f"Meal with ID {meal_id} has been deleted")
+                    raise ValueError(f"Meal with ID {meal_id} has been deleted.")
             except TypeError:
                 logger.info("Meal with ID %s not found", meal_id)
                 raise ValueError(f"Meal with ID {meal_id} not found")

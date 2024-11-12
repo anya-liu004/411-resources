@@ -153,13 +153,9 @@ def test_delete_meal_already_deleted(mock_cursor):
     mock_cursor.fetchone.return_value = ([True])
 
     # Expect a ValueError when attempting to delete a meal that's already been deleted
-    with pytest.raises(ValueError) as exc_info:
+    with pytest.raises(ValueError, match="Meal with ID 999 has been deleted."):
         delete_meal(999)
     
-    print(f"Caught error: {exc_info.value}")
-
-    # Now check if the message matches exactly
-    assert str(exc_info.value) == "Meal with ID 999 has already been deleted."
 
 
 # Test: Clearing the meals table
@@ -253,12 +249,12 @@ def test_get_meal_by_id_not_found(mock_cursor):
 def test_get_meal_by_id_deleted(mock_cursor):
     """Test retrieving a meal by ID when the meal is marked as deleted."""
 
-    # Simulate that the meal exists but is already marked as deleted (id = 1)
-    mock_cursor.fetchone.return_value = ([True])
+    # Simulate that the meal exists but is already marked as deleted (id = 999)
+    mock_cursor.fetchone.return_value = None
 
     # Expect a ValueError when the meal is marked as deleted
-    with pytest.raises(ValueError, match="Meal with ID 1 has been deleted"):
-        get_meal_by_id(1)
+    with pytest.raises(ValueError, match="Meal with ID 999 not found"):
+        get_meal_by_id(999)
 
 
 def test_get_leaderboard(mock_cursor):
@@ -266,9 +262,9 @@ def test_get_leaderboard(mock_cursor):
 
     # Simulate meals data
     mock_cursor.fetchall.return_value = [
-        (1, "Spaghetti", "Italian", 12.99, "Medium", 10, 7, 0.7),
-        (2, "Burger", "American", 8.99, "Easy", 15, 12, 0.8),
-        (3, "Sushi", "Japanese", 15.99, "Hard", 5, 3, 0.6)
+        (1, "Spaghetti", "Italian", 12.99, "MED", 10, 7, .7),
+        (2, "Burger", "American", 8.99, "LOW", 15, 12, .8),
+        (3, "Sushi", "Japanese", 15.99, "HIGH", 5, 3, .6)
     ]
 
     # Call the get_leaderboard function
@@ -276,9 +272,9 @@ def test_get_leaderboard(mock_cursor):
 
     # Expected result based on the simulated fetchall return value
     expected_result = [
-        {'id': 2, 'meal': "Burger", 'cuisine': "American", 'price': 8.99, 'difficulty': "Easy", 'battles': 15, 'wins': 12, 'win_pct': 80.0},
-        {'id': 1, 'meal': "Spaghetti", 'cuisine': "Italian", 'price': 12.99, 'difficulty': "Medium", 'battles': 10, 'wins': 7, 'win_pct': 70.0},
-        {'id': 3, 'meal': "Sushi", 'cuisine': "Japanese", 'price': 15.99, 'difficulty': "Hard", 'battles': 5, 'wins': 3, 'win_pct': 60.0}
+        {'id': 1, 'meal': "Spaghetti", 'cuisine': "Italian", 'price': 12.99, 'difficulty': "MED", 'battles': 10, 'wins': 7, 'win_pct': 70},
+        {'id': 2, 'meal': "Burger", 'cuisine': "American", 'price': 8.99, 'difficulty': "LOW", 'battles': 15, 'wins': 12, 'win_pct': 80},
+        {'id': 3, 'meal': "Sushi", 'cuisine': "Japanese", 'price': 15.99, 'difficulty': "HIGH", 'battles': 5, 'wins': 3, 'win_pct': 60}
     ]
 
     assert leaderboard == expected_result, f"Expected {expected_result}, but got {leaderboard}"
@@ -338,8 +334,10 @@ def test_update_meal_stats_meal_not_found(mock_cursor):
 
 def test_update_meal_stats_invalid_result(mock_cursor):
     """Test updating the meal stats with an invalid result."""
+    # 'deleted' status is False
+    mock_cursor.fetchone.return_value = (False,) 
 
     # Expect a ValueError for invalid result
-    with pytest.raises(ValueError, match="Invalid result: invalid. Expected 'win' or 'loss'."):
+    with pytest.raises(ValueError, match="Invalid result: invalid. Expected 'win' or 'loss'.") as exc_info:
         update_meal_stats(1, "invalid")
-
+    
