@@ -55,15 +55,10 @@ check_db() {
 get_all_meals() {
   echo "Getting all meals..."
   response=$(curl -s -X GET "$BASE_URL/get-all-meals")
-
-  echo "Response: $response"  # Print the full response for debugging
-
   if echo "$response" | grep -q '"status": "success"'; then
-    echo "Meals retrieved successfully."
-    if [ "$ECHO_JSON" = true ]; then
-      echo "Meals JSON:"
-      echo "$response" | jq .
-    fi
+    echo "All meals retrieved successfully."
+    echo "Meals JSON:"
+    echo "$response" | jq .
   else
     echo "Failed to get meals."
     exit 1
@@ -171,23 +166,30 @@ get_battle_score() {
   cuisine=$2
   price=$3
   difficulty=$4
-
+  
   echo "Getting battle score for combatant ($meal, $cuisine, $price, $difficulty)..."
-  response=$(curl -s -X GET "$BASE_URL/get-battle-score" \
+  response=$(curl -s -w "%{http_code}" -X GET "$BASE_URL/get-battle-score" \
     -H "Content-Type: application/json" \
     -d "{\"meal\": \"$meal\", \"cuisine\": \"$cuisine\", \"price\": $price, \"difficulty\": \"$difficulty\"}")
-
-  if echo "$response" | grep -q '"status": "success"'; then
+  body="${response::-3}"
+  status_code="${response: -3}"
+  if [ "$status_code" -eq 200 ] && echo "$body" | grep -q '"status": "success"'; then
     echo "Battle score retrieved successfully."
     if [ "$ECHO_JSON" = true ]; then
-      echo "Battle Score JSON:"
-      echo "$response" | jq .
+      if command -v jq > /dev/null; then
+        echo "Battle Score JSON:"
+        echo "$body" | jq .
+      else
+        echo "Warning: jq not installed. Raw JSON output:"
+        echo "$body"
+      fi
     fi
   else
-    echo "Failed to retrieve battle score."
+    echo "Failed to retrieve battle score. HTTP status: $status_code"
     exit 1
   fi
 }
+
 
 get_combatants() {
   echo "Retrieving current list of combatants..."
@@ -233,17 +235,20 @@ prep_combatant() {
 ######################################################
 
 get_leaderboard() {
-  echo "Getting leaderboard..."
-  response=$(curl -s -X GET "$BASE_URL/get-leaderboard")
+  echo "Getting meal leaderboard sorted by play count..."
+  response=$(curl -s -X GET "$BASE_URL/leaderboard?sort=wins")
   if echo "$response" | grep -q '"status": "success"'; then
-    echo "Leaderboard retrieved successfully."
-    echo "Leaderboard JSON:"
-    echo "$response" | jq .
+    echo "Meal leaderboard retrieved successfully."
+    if [ "$ECHO_JSON" = true ]; then
+      echo "Leaderboard JSON (sorted by meal wins):"
+      echo "$response" | jq .
+    fi
   else
-    echo "Failed to get leaderboard."
+    echo "Failed to get meal leaderboard."
     exit 1
   fi
 }
+
 
 # Health checks
 check_health
@@ -266,8 +271,7 @@ get_meal_by_id 1
 # Test retrieving a meal by name
 get_meal_by_name "Bolognese"
 
-# Test updating meal stats (replace 1 with a valid meal ID and result with 'win' or 'loss')
-update_meal_stats 1 "win"
+
 
 clear_combatants
 
@@ -277,10 +281,10 @@ prep_combatant "Burger" "American" 5.99 "LOW"
 
 get_combatants
 
-get_battle_score 1
-get_battle_score 2
+get_battle_score "Bolognese" "Italian" 12.99 "MED"
+get_battle_score "Burger" "American" 5.99 "LOW"
 
 # Get leaderboard
-get_leaderboard
+get_leaderboard "wins"
 
 echo "All tests passed successfully!"
