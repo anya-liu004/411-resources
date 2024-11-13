@@ -1,3 +1,5 @@
 # 411-resources
 
-Various resources helpful / necessary for BU's CS411 Software Engineering course
+Partners: Anya Liu and Cheyenne Mowatt
+Branch new includes final changes
+We did a lot of the programming in person together on one comouter.
